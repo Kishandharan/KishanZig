@@ -1,16 +1,17 @@
-// Andhaman Prisoner Problem
 const std = @import("std");
-const PageAllocator = std.heap.page_allocator;
-const CellState = enum { Open, Closed };
+const pageAllocator = std.heap.page_allocator;
+const print = std.debug.print;
+
+const Gender = enum { Male, Female };
+
+const Person = struct { name: []const u8, age: i32, gender: Gender };
 
 pub fn main() !void {
-    const cells: []CellState = PageAllocator.alloc(CellState, 10) catch {
-        unreachable;
-    };
+    const heapPerson: *Person = try pageAllocator.create(Person);
+    heapPerson.* = .{ .name = "Kishan", .age = 12, .gender = .Male };
 
-    for (0..cells.len) |i| {
-        cells[i] = .Closed;
-    }
-
-    std.debug.print("{}", .{cells[0]});
+    print("\n--- Person Details---\n", .{});
+    print("Name: {s}\n", .{heapPerson.*.name});
+    print("Age: {d}\n", .{heapPerson.*.age});
+    print("Gender: {any}\n", .{heapPerson.*.gender});
 }
